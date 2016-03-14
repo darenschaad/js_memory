@@ -13,11 +13,21 @@ var card4 = new Card(4, "pear");
 var compareArray = [];
 
 function compare(firstCard, secondCard){
-  if (firstCard.value === secondCard.value && firstCard.faceDown === false && secondCard.faceDown === false) {
+  if (firstCard.value === secondCard.value && firstCard.faceDown === false && secondCard.faceDown === false && firstCard.id !== secondCard.id) {
     return true
   } else {
     return false;
   }
+}
+
+function incorrectGuess(){
+  $('#card' + compareArray[0].id).flip('toggle');
+  $('#card' + compareArray[1].id).flip('toggle');
+  compareArray[0].putBack();
+  compareArray[1].putBack();
+
+  compareArray = [];
+
 }
 
 Card.prototype.reveal = function(){
@@ -40,16 +50,14 @@ Card.prototype.checkArrayLength = function(){
 
       console.log("THEY ARE NOOOOOT EQUAL");
 
-
-      //insert time
-      $('#card' + compareArray[0].id).flip('toggle')
-      $('#card' + compareArray[1].id).flip('toggle');
+      setTimeout(function(){ incorrectGuess();
+      }, 2000);
 
 
-      compareArray[0].putBack();
-      compareArray[1].putBack();
 
-      compareArray = [];
+
+
+
     }
   }
 }
