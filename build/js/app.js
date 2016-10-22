@@ -68,13 +68,13 @@ Card.prototype.checkArrayLength = function(){
   if (compareArray.length === 2){
     if (compare(compareArray[0], compareArray[1])){
       setTimeout(function(){ correctGuess();
-      }, 2000);
+      }, 1000);
     } else {
 
       console.log("THEY ARE NOOOOOT EQUAL");
 
       setTimeout(function(){ incorrectGuess();
-      }, 2000);
+      }, 1000);
 
     }
   }
