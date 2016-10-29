@@ -13,6 +13,8 @@ var card6 = new Card(6, "cherry");
 
 var cards = [card1, card2, card3, card4, card5, card6];
 
+var clickable = true;
+
 function shuffleArray(cards) {
     for (var i = cards.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
@@ -36,25 +38,25 @@ function compare(firstCard, secondCard){
 }
 
 function incorrectGuess(){
-  $('#card' + compareArray[0].id).flip('toggle');
-  $('#card' + compareArray[1].id).flip('toggle');
+  $('#' + compareArray[0].id).flip('toggle');
+  $('#' + compareArray[1].id).flip('toggle');
   compareArray[0].putBack();
   compareArray[1].putBack();
 
   compareArray = [];
+  clickable = true;
 
 }
 
 function correctGuess(){
-  $('#card' + compareArray[0].id).fadeOut();
-  $('#card' + compareArray[1].id).fadeOut();
+  $('#' + compareArray[0].id).fadeOut();
+  $('#' + compareArray[1].id).fadeOut();
  console.log("THEY ARE EQUAL");
 
  compareArray = [];
+ clickable = true;
 
 }
-
-
 
 Card.prototype.reveal = function(){
   this.faceDown = false;
@@ -65,27 +67,38 @@ Card.prototype.putBack = function(){
 }
 
 Card.prototype.checkArrayLength = function(){
+  if (compareArray.length === 1) {
+
+  }
   if (compareArray.length === 2){
+    clickable = false;
     if (compare(compareArray[0], compareArray[1])){
       setTimeout(function(){ correctGuess();
       }, 1200);
+
     } else {
 
-      console.log("THEY ARE NOOOOOT EQUAL");
-
       setTimeout(function(){ incorrectGuess();
-      }, 1200);
 
+      }, 1200);
     }
   }
 }
 
+Card.prototype.onCardClick = function(htmlCard){
+  if (this.faceDown) {
+    htmlCard.flip("toggle");
+    this.reveal();
+    compareArray.push(this);
+    console.log(compareArray);
+    this.checkArrayLength();
+  }
+}
 //UI LOGIC
 $(document).ready(function(){
 
 for ( var i = 0; i < 3 ; i++) {
-
-    $('#append').append('<div class="col-md-4">' + '<div id="card' + shuffledCards[i].id + '" class="card">' +
+    $('#append').append('<div class="col-md-4">' + '<div id=' + shuffledCards[i].id + ' class="card">' +
     '<div class="front alert alert-info">' +
     '</div>' +
     '<div class="back well well-lg">' +
@@ -96,8 +109,7 @@ for ( var i = 0; i < 3 ; i++) {
 }
 
 for ( var i = 3; i < 6 ; i++) {
-
-    $('#append2').append('<div class="col-md-4">' + '<div id="card' + shuffledCards[i].id + '"class="card">' +
+    $('#append2').append('<div class="col-md-4">' + '<div id=' + shuffledCards[i].id + ' class="card">' +
     '<div class="front alert alert-info">' +
     '</div>' +
     '<div class="back well well-lg">' +
@@ -106,56 +118,47 @@ for ( var i = 3; i < 6 ; i++) {
     '</div>' +
     '</div>');
 }
+$('.card').flip({
+  trigger: "manual"
+});
 
-// for ( var i = 4; i < 6 ; i++) {
-//
-//     $('#append2').append('<div class="col-md-4">' + '<div id="card' + shuffledCards[i].id + '"class="card">' +
-//     '<div class="front alert alert-info">' +
-//     '</div>' +
-//     '<div class="back well well-lg">' +
-//     shuffledCards[i].value +
-//     '</div>' +
-//     '</div>' +
-//     '</div>');
-// }
+function flipFunction(htmlCard) {
+  if (clickable) {
+    var id = parseInt(htmlCard.attr('id'));
+    console.log(id);
 
-  $ (function(){
-    $('.card').flip();
+    for (var i = 0; i < shuffledCards.length; i++) {
+      if (shuffledCards[i].id === id) {
+
+        shuffledCards[i].onCardClick(htmlCard);
+      }
+    }
+  }
+
+}
+
+  $('#1').click(function(){
+    flipFunction($(this));
   });
 
-  $('#card1').click(function(){
-    card1.reveal();
-    compareArray.push(card1);
-    card1.checkArrayLength();
+  $('#2').click(function(){
+    flipFunction($(this));
   });
 
-  $('#card2').click(function(){
-    card2.reveal();
-    compareArray.push(card2);
-    card2.checkArrayLength();
+  $('#3').click(function(){
+    flipFunction($(this));
   });
 
-  $('#card3').click(function(){
-    card3.reveal();
-    compareArray.push(card3);
-    card3.checkArrayLength();
+  $('#4').click(function(){
+    flipFunction($(this));
   });
 
-  $('#card4').click(function(){
-    card4.reveal();
-    compareArray.push(card4);
-    card4.checkArrayLength();
+  $('#5').click(function(){
+    flipFunction($(this));
   });
 
-  $('#card5').click(function(){
-    card5.reveal();
-    compareArray.push(card5);
-    card5.checkArrayLength();
-  });
+  $('#6').click(function(){
+    flipFunction($(this));
 
-  $('#card6').click(function(){
-    card6.reveal();
-    compareArray.push(card6);
-    card6.checkArrayLength();
   });
 });
